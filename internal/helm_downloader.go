@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"k8spolicy/config"
 	"k8spolicy/internal/registry"
+	"log"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -18,51 +19,55 @@ import (
 	"helm.sh/helm/v3/pkg/repo"
 )
 
+// DownloadCharts downloads all configured charts from the repositories and registries
 func DownloadCharts() {
-	downloadFromRepos()
-	downloadFromRegistries()
+	dir := filepath.Join(config.WorkingDirectory, "manifests")
+	EnsureDirectory(dir, true)
+
+	downloadFromRepos(dir)
+	downloadFromRegistries(dir)
 }
 
-func downloadFromRegistries() {
+func downloadFromRegistries(baseDir string) {
 	for _, r := range config.Conf.Helm.Registries {
 		registryClient, _ := registry.NewClient()
 
 		ref, err := registry.ParseReference(r.URL + ":" + r.Version)
 		if err != nil {
-			panic(err)
+			log.Fatal(err)
 		}
 
-		err = registryClient.PullChart(ref)
-		if err != nil {
-			panic(err)
+		if err = registryClient.PullChart(ref); err != nil {
+			log.Fatal(err)
 		}
 
 		chart, err := registryClient.LoadChart(ref)
 		if err != nil {
-			panic(err)
+			log.Fatal(err)
 		}
 
-		EnsureDirectory("/tmp/k8spolicy/manifests", false)
-		err = chartutil.SaveDir(chart, "/tmp/k8spolicy/manifests")
-		if err != nil {
-			panic(err)
+		if err = chartutil.SaveDir(chart, baseDir); err != nil {
+			log.Fatal(err)
 		}
 
-		err = registryClient.RemoveChart(ref)
-		if err != nil {
-			panic(err)
+		if err = registryClient.RemoveChart(ref); err != nil {
+			log.Fatal(err)
 		}
 
-		chartDir := filepath.Join("/tmp/k8spolicy/manifests", chart.Metadata.Name)
-		rendered := renderChart(chartDir, r.Values)
-		WriteFile("/tmp/k8spolicy/manifests/"+chart.Metadata.Name+".yaml", rendered)
+		chartDir := filepath.Join(baseDir, chart.Metadata.Name)
+		rendered, err := renderChart(chartDir, r.Values)
+		if err == nil {
+			WriteFile(filepath.Join(baseDir, chart.Metadata.Name+".yaml"), rendered)
+		} else {
+			fmt.Printf("Skipping %s. Chart cannot be rendered: %e", chart.Metadata.Name, err)
+		}
+
 		os.RemoveAll(chartDir)
 	}
 }
 
-func downloadFromRepos() {
-	yaml := `
-apiVersion: v1
+func downloadFromRepos(baseDir string) {
+	yaml := `apiVersion: v1
 repositories:
 `
 
@@ -76,7 +81,11 @@ repositories:
 		nameMap[r.URL] = cleaned
 	}
 
-	configFile, _ := WriteFile("/tmp/k8spolicy/repositories.yaml", yaml)
+	configFile, err := WriteFile(filepath.Join(config.WorkingDirectory, "repositories.yaml"), yaml)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	settings := cli.New()
 
 	dl := downloader.ChartDownloader{
@@ -89,43 +98,50 @@ repositories:
 	for _, r := range config.Conf.Helm.Repositories {
 		repo, err := repo.NewChartRepository(&repo.Entry{URL: r.URL, Name: nameMap[r.URL]}, getter.All(settings))
 		if err != nil {
-			panic(err)
+			log.Fatal(err)
 		}
 
-		_, err = repo.DownloadIndexFile()
+		if _, err := repo.DownloadIndexFile(); err != nil {
+			log.Fatal(err)
+		}
+
+		dest, _, err := dl.DownloadTo(filepath.Join(nameMap[r.URL], r.Chart), r.Version, config.WorkingDirectory)
 		if err != nil {
-			panic(err)
+			log.Fatal(err)
 		}
 
-		dest, _, err := dl.DownloadTo(nameMap[r.URL]+"/"+r.Chart, r.Version, "/tmp/k8spolicy")
+		stream, err := os.Open(dest)
 		if err != nil {
-			panic(err)
+			log.Fatal(err)
 		}
 
-		stream, _ := os.Open(dest)
-		ExtractTarGz(stream, "/tmp/k8spolicy")
+		ExtractTarGz(stream, config.WorkingDirectory)
 		stream.Close()
 		os.Remove(dest)
 
-		EnsureDirectory("/tmp/k8spolicy/manifests", false)
-		chartDir := filepath.Join("/tmp/k8spolicy", r.Chart)
-		rendered := renderChart(chartDir, r.Values)
-		WriteFile("/tmp/k8spolicy/manifests/"+r.Chart+".yaml", rendered)
+		chartDir := filepath.Join(config.WorkingDirectory, r.Chart)
+		rendered, err := renderChart(chartDir, r.Values)
+		if err == nil {
+			WriteFile(filepath.Join(baseDir, r.Chart+".yaml"), rendered)
+		} else {
+			fmt.Printf("Skipping %s. Chart cannot be rendered: %e", r.Chart, err)
+		}
+
 		os.RemoveAll(chartDir)
 	}
 }
 
-func renderChart(dir string, val []string) string {
+func renderChart(dir string, val []string) (string, error) {
 	chart, err := loader.Load(dir)
 	if err != nil {
-		panic(err)
+		return "", err
 	}
 
 	valueOpts := &values.Options{ValueFiles: val}
 	p := getter.All(cli.New())
 	vals, err := valueOpts.MergeValues(p)
 	if err != nil {
-		panic(err)
+		return "", err
 	}
 
 	install := action.NewInstall(&action.Configuration{})
@@ -133,5 +149,10 @@ func renderChart(dir string, val []string) string {
 	install.ClientOnly = true
 	install.ReleaseName = "RELEASE-NAME"
 	rel, err := install.Run(chart, vals)
-	return rel.Manifest
+
+	if err != nil {
+		return "", err
+	}
+
+	return rel.Manifest, nil
 }

@@ -3,7 +3,6 @@ package internal
 import (
 	"archive/tar"
 	"compress/gzip"
-	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -11,6 +10,7 @@ import (
 	"path/filepath"
 )
 
+// CopyFile creates a file at the given destination and writes all bytes from src
 func CopyFile(src string, dest string) {
 	from, err := os.Open(src)
 	if err != nil {
@@ -25,12 +25,12 @@ func CopyFile(src string, dest string) {
 	}
 	defer to.Close()
 
-	_, err = io.Copy(to, from)
-	if err != nil {
+	if _, err = io.Copy(to, from); err != nil {
 		log.Fatal(err)
 	}
 }
 
+// Contains returns true, if the given array contains the given string
 func Contains(arr []string, str string) bool {
 	for _, a := range arr {
 		if a == str {
@@ -62,6 +62,7 @@ func DownloadFile(filepath string, url string) error {
 	return err
 }
 
+// ExtractTarGz extracts all files from the stream to the given basePath
 func ExtractTarGz(gzipStream io.Reader, basePath string) string {
 	uncompressedStream, err := gzip.NewReader(gzipStream)
 	if err != nil {
@@ -76,9 +77,7 @@ func ExtractTarGz(gzipStream io.Reader, basePath string) string {
 
 		if err == io.EOF {
 			break
-		}
-
-		if err != nil {
+		} else if err != nil {
 			log.Fatalf("ExtractTarGz: Next() failed: %s", err.Error())
 		}
 
@@ -97,9 +96,11 @@ func ExtractTarGz(gzipStream io.Reader, basePath string) string {
 			if err != nil {
 				log.Fatalf("ExtractTarGz: Create() failed: %s", err.Error())
 			}
+
 			if _, err := io.Copy(outFile, tarReader); err != nil {
 				log.Fatalf("ExtractTarGz: Copy() failed: %s", err.Error())
 			}
+
 			outFile.Close()
 
 		default:
@@ -113,6 +114,7 @@ func ExtractTarGz(gzipStream io.Reader, basePath string) string {
 	return rootDir
 }
 
+// EnsureDirectory creates the given path and removes it first if the clear flag is set
 func EnsureDirectory(path string, clear bool) {
 	if clear == true {
 		_ = os.RemoveAll(path)
@@ -122,17 +124,16 @@ func EnsureDirectory(path string, clear bool) {
 	}
 }
 
+// WriteFile creates a file at the given path and writes the whole string to it.
 func WriteFile(path string, s string) (string, error) {
 	f, err := os.Create(path)
 	if err != nil {
-		fmt.Println(err)
-		return "", err
+		log.Fatal(err)
 	}
-	_, err = f.WriteString(s)
-	if err != nil {
-		fmt.Println(err)
+
+	if _, err = f.WriteString(s); err != nil {
 		f.Close()
-		return "", err
+		log.Fatal(err)
 	}
 
 	return path, nil

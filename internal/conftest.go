@@ -2,27 +2,34 @@ package internal
 
 import (
 	"fmt"
+	"k8spolicy/config"
+	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"runtime"
 )
 
+// RunConftest executes the conftest binary with the manifests and rules
 func RunConftest() {
 	conftest := downloadConftest()
 
-	yamls, _ := filepath.Glob("/tmp/k8spolicy/manifests/*.yaml")
-	args := append([]string{"test", "-p", "/tmp/k8spolicy/policies"}, yamls...)
+	yamls, _ := filepath.Glob(filepath.Join(config.WorkingDirectory, "manifests/*.yaml"))
+	args := append([]string{"test", "-p", filepath.Join(config.WorkingDirectory, "policies")}, yamls...)
 
 	cmd := exec.Command(conftest, args...)
-	output, _ := cmd.CombinedOutput()
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		fmt.Println(string(output))
+		log.Fatal(err)
+	}
+
 	fmt.Println(string(output))
 	os.Exit(cmd.ProcessState.ExitCode())
 }
 
 func downloadConftest() string {
-	dir := filepath.Join(os.TempDir(), "k8spolicy")
-	conftest := filepath.Join(dir, "conftest")
+	conftest := filepath.Join(config.WorkingDirectory, "conftest")
 
 	if _, err := os.Stat(conftest); err == nil {
 		return conftest
@@ -33,15 +40,17 @@ func downloadConftest() string {
 	fmt.Println("Downloading conftest " + version + "...")
 	url := "https://github.com/instrumenta/conftest/releases/download/v" + version + "/conftest_" + version + "_" + arch + "_x86_64.tar.gz"
 
-	downloadFile := filepath.Join(dir, "conftest.tar.gz")
-	err := DownloadFile(downloadFile, url)
-
-	if err != nil {
-		panic(err)
+	downloadFile := filepath.Join(config.WorkingDirectory, "conftest.tar.gz")
+	if err := DownloadFile(downloadFile, url); err != nil {
+		log.Fatal(err)
 	}
 
-	stream, _ := os.Open(downloadFile)
-	ExtractTarGz(stream, dir)
+	stream, err := os.Open(downloadFile)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	ExtractTarGz(stream, config.WorkingDirectory)
 	stream.Close()
 	os.Remove(downloadFile)
 	os.Chmod(conftest, 0755)

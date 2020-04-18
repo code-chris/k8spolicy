@@ -2,6 +2,7 @@ package internal
 
 import (
 	"k8spolicy/config"
+	"log"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -13,8 +14,8 @@ import (
 )
 
 // DownloadPolicies downloads all configured policies, so they are ready to use.
-func DownloadPolicies() error {
-	dir := filepath.Join(os.TempDir(), "k8spolicy", "policies")
+func DownloadPolicies() {
+	dir := filepath.Join(config.WorkingDirectory, "policies")
 	EnsureDirectory(dir, true)
 
 	configSources := config.Conf.Rules.Additionals
@@ -41,16 +42,19 @@ func DownloadPolicies() error {
 
 			// a tar.gz is assumed
 			downloadFile := filepath.Join(dir, "download.tar.gz")
-			err := DownloadFile(downloadFile, url)
 
-			if err != nil {
-				panic(err)
+			if err := DownloadFile(downloadFile, url); err != nil {
+				log.Fatal(err)
 			}
 
 			// extract and copy the files
 			downloadDir := filepath.Join(dir, "download")
 			EnsureDirectory(downloadDir, false)
-			stream, _ := os.Open(downloadFile)
+			stream, err := os.Open(downloadFile)
+			if err != nil {
+				log.Fatal(err)
+			}
+
 			extractDir := ExtractTarGz(stream, downloadDir)
 			stream.Close()
 			os.Remove(downloadFile)
@@ -86,6 +90,4 @@ func DownloadPolicies() error {
 			}
 		}
 	}
-
-	return nil
 }
