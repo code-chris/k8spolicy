@@ -5,12 +5,9 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"regexp"
 	"strings"
 
 	"github.com/yargevad/filepathx"
-
-	"golang.org/x/mod/semver"
 )
 
 // DownloadPolicies downloads all configured policies, so they are ready to use.
@@ -76,21 +73,6 @@ func DownloadPolicies(skip bool) {
 			files, _ = filepathx.Glob(filepath.Join(dir, "**", "*_test*"))
 			for _, f := range files {
 				os.Remove(f)
-			}
-
-			// remove newer version-scoped rule-files
-			if config.Conf.TargetVersion != "" {
-				r := regexp.MustCompile(`.*(?P<Version>\d\.\d+).*\.rego`)
-				files, _ = filepathx.Glob(filepath.Join(dir, "**", "*.rego"))
-				for _, f := range files {
-					match := r.FindStringSubmatch(filepath.Base(f))
-					if len(match) > 0 {
-						result := semver.Compare("v"+config.Conf.TargetVersion, "v"+match[1])
-						if result == -1 {
-							os.Remove(f)
-						}
-					}
-				}
 			}
 		}
 	}

@@ -7,15 +7,20 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"runtime"
+
+	"github.com/yargevad/filepathx"
+	"golang.org/x/mod/semver"
 )
 
 // RunConftest executes the conftest binary with the manifests and rules
 func RunConftest(skip bool) {
 	conftest := downloadConftest(skip)
+	filterRuleFiles()
 
 	yamls, _ := filepath.Glob(filepath.Join(config.WorkingDirectory, "manifests/*.yaml"))
-	args := append([]string{"test", "-p", filepath.Join(config.WorkingDirectory, "policies")}, yamls...)
+	args := append([]string{"test", "-p", filepath.Join(config.WorkingDirectory, "currentPolicies")}, yamls...)
 
 	cmd := exec.Command(conftest, args...)
 	output, err := cmd.CombinedOutput()
@@ -26,6 +31,27 @@ func RunConftest(skip bool) {
 
 	fmt.Println(string(output))
 	os.Exit(cmd.ProcessState.ExitCode())
+}
+
+func filterRuleFiles() {
+	policies, _ := filepathx.Glob(filepath.Join(config.WorkingDirectory, "policies/**/*.rego"))
+	dir := filepath.Join(config.WorkingDirectory, "currentPolicies")
+	EnsureDirectory(dir, true)
+	r := regexp.MustCompile(`.*(?P<Version>\d\.\d+).*\.rego`)
+
+	for _, f := range policies {
+		match := r.FindStringSubmatch(filepath.Base(f))
+		if len(match) > 0 && config.Conf.TargetVersion != "" {
+			result := semver.Compare("v"+config.Conf.TargetVersion, "v"+match[1])
+			if result != -1 {
+				s, _ := filepath.Rel(filepath.Join(config.WorkingDirectory, "policies"), f)
+				CopyFile(f, filepath.Join(dir, s))
+			}
+		} else {
+			s, _ := filepath.Rel(filepath.Join(config.WorkingDirectory, "policies"), f)
+			CopyFile(f, filepath.Join(dir, s))
+		}
+	}
 }
 
 func downloadConftest(skip bool) string {
