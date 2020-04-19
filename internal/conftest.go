@@ -11,8 +11,8 @@ import (
 )
 
 // RunConftest executes the conftest binary with the manifests and rules
-func RunConftest() {
-	conftest := downloadConftest()
+func RunConftest(skip bool) {
+	conftest := downloadConftest(skip)
 
 	yamls, _ := filepath.Glob(filepath.Join(config.WorkingDirectory, "manifests/*.yaml"))
 	args := append([]string{"test", "-p", filepath.Join(config.WorkingDirectory, "policies")}, yamls...)
@@ -28,8 +28,12 @@ func RunConftest() {
 	os.Exit(cmd.ProcessState.ExitCode())
 }
 
-func downloadConftest() string {
+func downloadConftest(skip bool) string {
 	conftest := filepath.Join(config.WorkingDirectory, "conftest")
+
+	if skip {
+		return conftest
+	}
 
 	if _, err := os.Stat(conftest); err == nil {
 		return conftest

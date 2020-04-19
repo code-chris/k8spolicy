@@ -14,7 +14,11 @@ import (
 )
 
 // DownloadPolicies downloads all configured policies, so they are ready to use.
-func DownloadPolicies() {
+func DownloadPolicies(skip bool) {
+	if skip {
+		return
+	}
+
 	dir := filepath.Join(config.WorkingDirectory, "policies")
 	EnsureDirectory(dir, true)
 
