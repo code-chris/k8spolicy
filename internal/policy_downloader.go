@@ -22,7 +22,19 @@ func DownloadPolicies(skip bool) {
 	configSources := config.Conf.Rules.Additionals
 
 	if Contains(config.Conf.Rules.Presets, "k8s-api-deprecation") {
-		configSources = append(configSources, config.RuleSource{URL: "https://github.com/swade1987/deprek8ion", Files: "policies/*.rego"})
+		configSources = append(configSources, config.RuleSource{
+			Name:  "k8s-api-deprecation",
+			URL:   "https://github.com/swade1987/deprek8ion",
+			Files: "policies/*.rego",
+		})
+	}
+
+	if Contains(config.Conf.Rules.Presets, "k8s-security") {
+		configSources = append(configSources, config.RuleSource{
+			Name:  "k8s-security",
+			URL:   "https://github.com/instrumenta/policies",
+			Files: "kubernetes/**/*.rego",
+		})
 	}
 
 	for _, v := range configSources {
@@ -64,7 +76,7 @@ func DownloadPolicies(skip bool) {
 			files, _ := filepathx.Glob(x)
 			for _, src := range files {
 				s, _ := filepath.Rel(filepath.Join(downloadDir, extractDir), src)
-				CopyFile(src, filepath.Join(dir, s))
+				CopyFile(src, filepath.Join(dir, v.Name, s))
 			}
 
 			os.RemoveAll(downloadDir)

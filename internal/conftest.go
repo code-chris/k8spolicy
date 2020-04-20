@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"runtime"
+	"strings"
 
 	"github.com/yargevad/filepathx"
 	"golang.org/x/mod/semver"
@@ -40,6 +41,11 @@ func filterRuleFiles() {
 	r := regexp.MustCompile(`.*(?P<Version>\d\.\d+).*\.rego`)
 
 	for _, f := range policies {
+		if (strings.Contains(f, "k8s-api-deprecation") && !Contains(config.Conf.Rules.Presets, "k8s-api-deprecation")) ||
+			(strings.Contains(f, "k8s-security") && !Contains(config.Conf.Rules.Presets, "k8s-security")) {
+			continue
+		}
+
 		match := r.FindStringSubmatch(filepath.Base(f))
 		if len(match) > 0 && config.Conf.TargetVersion != "" {
 			result := semver.Compare("v"+config.Conf.TargetVersion, "v"+match[1])

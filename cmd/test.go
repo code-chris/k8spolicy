@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"k8spolicy/internal"
+	"os"
 
 	"github.com/spf13/cobra"
 )
@@ -14,9 +15,9 @@ var testCmd = &cobra.Command{
 		skipPolicies, _ := cmd.Flags().GetBool("skip-policy-download")
 		skipConftest, _ := cmd.Flags().GetBool("skip-conftest-download")
 
-		internal.DownloadPolicies(skipPolicies)
+		internal.DownloadPolicies(skipPolicies || os.Getenv("K8SPOLICY_SKIP_POLICY_DOWNLOAD") == "true")
 		internal.DownloadCharts()
-		internal.RunConftest(skipConftest)
+		internal.RunConftest(skipConftest || os.Getenv("K8SPOLICY_SKIP_CONFTEST_DOWNLOAD") == "true")
 	},
 }
 

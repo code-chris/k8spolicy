@@ -4,6 +4,7 @@ package config
 type RuleSource struct {
 	URL   string `yaml:"url"`
 	Files string `yaml:"files"`
+	Name  string
 }
 
 // Config of the cli
