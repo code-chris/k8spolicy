@@ -1,4 +1,4 @@
-FROM golang:1.14 as builder
+FROM golang:1.14.2 as builder
 
 WORKDIR /go/src/app
 COPY . .
@@ -9,7 +9,7 @@ RUN go build -ldflags '-w -s' -o /k8spolicy
 FROM debian:buster-slim
 COPY --from=builder /k8spolicy /k8spolicy
 
-ENV CONFTEST_VERSION 0.18.1
+ENV CONFTEST_VERSION 0.18.2
 ENV K8SPOLICY_SKIP_POLICY_DOWNLOAD true
 ENV K8SPOLICY_SKIP_CONFTEST_DOWNLOAD true
 
