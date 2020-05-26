@@ -19,8 +19,9 @@ import (
 func RunConftest(skip bool) {
 	conftest := downloadConftest(skip)
 	filterRuleFiles()
+	copyStandaloneYamlFiles()
 
-	yamls, _ := filepath.Glob(filepath.Join(config.WorkingDirectory, "manifests/*.yaml"))
+	yamls, _ := filepathx.Glob(filepath.Join(config.WorkingDirectory, "manifests/**/*.yaml"))
 	args := append([]string{"test", "-p", filepath.Join(config.WorkingDirectory, "currentPolicies")}, yamls...)
 
 	cmd := exec.Command(conftest, args...)
@@ -91,4 +92,17 @@ func downloadConftest(skip bool) string {
 	os.Remove(downloadFile)
 	os.Chmod(conftest, 0755)
 	return conftest
+}
+
+func copyStandaloneYamlFiles() {
+	basePath := filepath.Join(config.WorkingDirectory, "manifests")
+
+	for _, glob := range config.Conf.Files {
+		yamls, _ := filepath.Glob(glob)
+
+		for _, yaml := range yamls {
+			dest := filepath.Join(basePath, yaml)
+			CopyFile(yaml, dest)
+		}
+	}
 }
