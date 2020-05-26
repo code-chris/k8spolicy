@@ -73,7 +73,7 @@ func downloadConftest(skip bool) string {
 	}
 
 	arch := runtime.GOOS
-	version := "0.18.1"
+	version := "0.18.2"
 	fmt.Println("Downloading conftest " + version + "...")
 	url := "https://github.com/instrumenta/conftest/releases/download/v" + version + "/conftest_" + version + "_" + arch + "_x86_64.tar.gz"
 
