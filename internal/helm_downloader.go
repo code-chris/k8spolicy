@@ -105,7 +105,7 @@ repositories:
 			log.Fatal(err)
 		}
 
-		dest, _, err := dl.DownloadTo(filepath.Join(nameMap[r.URL], r.Chart), r.Version, config.WorkingDirectory)
+		dest, _, err := dl.DownloadTo(nameMap[r.URL]+"/"+r.Chart, r.Version, config.WorkingDirectory)
 		if err != nil {
 			log.Fatal(err)
 		}
