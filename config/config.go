@@ -27,8 +27,7 @@ type Config struct {
 			Values  []string `yaml:"values"`
 		} `yaml:"repositories"`
 	} `yaml:"helm"`
-	Files  []string `yaml:"files"`
-	Ignore []string `yaml:"ignore"`
+	Files []string `yaml:"files"`
 }
 
 var (
