@@ -7,7 +7,7 @@ RUN go build -ldflags '-w -s' -o /k8spolicy
 
 
 FROM debian:buster-slim
-COPY --from=builder /k8spolicy /k8spolicy
+COPY --from=builder /k8spolicy /usr/local/bin/k8spolicy
 
 ENV CONFTEST_VERSION 0.18.2
 ENV K8SPOLICY_SKIP_POLICY_DOWNLOAD true
@@ -44,4 +44,4 @@ RUN apt-get update && \
     chown -R 1000:1000 /tmp/k8spolicy
 
 USER k8spolicy
-ENTRYPOINT ["/k8spolicy"]
+ENTRYPOINT ["/usr/local/bin/k8spolicy"]
