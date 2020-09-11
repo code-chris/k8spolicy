@@ -4,6 +4,9 @@
     ":semanticCommitScopeDisabled"
   ],
   "labels": [
-    "dependencies"
+    "kind/dependencies"
+  ],
+  "reviewers": [
+    "ckotzbauer"
   ]
 }
