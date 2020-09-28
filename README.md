@@ -1,6 +1,8 @@
 
 # K8sPolicy
 
+![build](https://github.com/ckotzbauer/k8spolicy/workflows/build/badge.svg)
+
 This cli-tool helps you to run rego-policies against your kubernetes yaml-files. Helm-Charts are supported as well. [Conftest](https://github.com/instrumenta/conftest) is used under the hood.
 
 ## Installation
