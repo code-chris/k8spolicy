@@ -18,7 +18,7 @@ require (
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/viper v1.7.1
 	github.com/yargevad/filepathx v0.0.0-20161019152617-907099cb5a62
-	golang.org/x/mod v0.3.0
+	golang.org/x/mod v0.4.0
 	golang.org/x/sys v0.0.0-20200413165638-669c56c373c4 // indirect
 	gopkg.in/ini.v1 v1.55.0 // indirect
 	helm.sh/helm/v3 v3.1.2
