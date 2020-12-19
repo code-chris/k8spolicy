@@ -34,6 +34,7 @@ RUN apt-get update && \
     cp /download/conftest /tmp/k8spolicy && \
     rm -rf /download && \
 
+    apt-get upgrade -y && \
     apt-get remove -y wget && \
     apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/* && \
