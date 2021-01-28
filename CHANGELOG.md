@@ -1,3 +1,22 @@
+## Version 0.2.2 (2021-01-28)
+
+* [[`27f8d679`](https://github.com/ckotzbauer&#x2F;k8spolicy/commit/27f8d679)] - **chore**: update module deislabs&#x2F;oras to v0.9.0
+* [[`a7826b91`](https://github.com/ckotzbauer&#x2F;k8spolicy/commit/a7826b91)] - **chore**: Merge pull request #45 from ckotzbauer&#x2F;dependabot&#x2F;github_actions&#x2F;pascalgn&#x2F;size-label-action-cdbe57c421bcd58ecfb528fa36325faf11e032a9
+* [[`d5e9cf78`](https://github.com/ckotzbauer&#x2F;k8spolicy/commit/d5e9cf78)] - **chore**: Bump pascalgn&#x2F;size-label-action
+* [[`e704be55`](https://github.com/ckotzbauer&#x2F;k8spolicy/commit/e704be55)] - **chore**: update golang docker tag to v1.15.7 (#43)
+* [[`41568c1a`](https://github.com/ckotzbauer&#x2F;k8spolicy/commit/41568c1a)] - **chore**: Update renovate.json
+* [[`3c025700`](https://github.com/ckotzbauer&#x2F;k8spolicy/commit/3c025700)] - **chore**: update module golang.org&#x2F;x&#x2F;mod to v0.4.1 (#41)
+* [[`83307663`](https://github.com/ckotzbauer&#x2F;k8spolicy/commit/83307663)] - **chore**: Bump pascalgn&#x2F;automerge-action (#40)
+* [[`462a4d6d`](https://github.com/ckotzbauer&#x2F;k8spolicy/commit/462a4d6d)] - **chore**: Bump actions&#x2F;setup-node from v2.1.3 to v2.1.4 (#39)
+* [[`aa2427dc`](https://github.com/ckotzbauer&#x2F;k8spolicy/commit/aa2427dc)] - **chore**: change automerge policy
+* [[`f06dd3ce`](https://github.com/ckotzbauer&#x2F;k8spolicy/commit/f06dd3ce)] - **chore**: Bump actions&#x2F;setup-node from v2.1.2 to v2.1.3
+* [[`942a02cf`](https://github.com/ckotzbauer&#x2F;k8spolicy/commit/942a02cf)] - **chore**: release 0.2.1
+* [[`a95a656a`](https://github.com/ckotzbauer&#x2F;k8spolicy/commit/a95a656a)] - **fix**: add replace for oras update
+* [[`60638279`](https://github.com/ckotzbauer&#x2F;k8spolicy/commit/60638279)] - **security**: update to go@1.15.7
+* [[`8b9b96ff`](https://github.com/ckotzbauer&#x2F;k8spolicy/commit/8b9b96ff)] - **security**: add allowlist
+* [[`f39df988`](https://github.com/ckotzbauer&#x2F;k8spolicy/commit/f39df988)] - **security**: update packages
+* [[`95278b87`](https://github.com/ckotzbauer&#x2F;k8spolicy/commit/95278b87)] - **security**: add image-scan
+
 ## Version 0.2.1 (2020-12-09)
 
 * [[`0c42c8e6`](https://github.com/ckotzbauer&#x2F;k8spolicy/commit/0c42c8e6)] - **chore**: fix release-process
