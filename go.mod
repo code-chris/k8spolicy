@@ -4,7 +4,7 @@ go 1.15
 
 require (
 	github.com/containerd/containerd v1.4.3
-	github.com/deislabs/oras v0.9.0
+	github.com/deislabs/oras v0.10.0
 	github.com/docker/go-units v0.4.0
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/mitchellh/mapstructure v1.2.2 // indirect
@@ -19,7 +19,6 @@ require (
 	github.com/spf13/viper v1.7.1
 	github.com/yargevad/filepathx v0.0.0-20161019152617-907099cb5a62
 	golang.org/x/mod v0.4.1
-	golang.org/x/sys v0.0.0-20200413165638-669c56c373c4 // indirect
 	gopkg.in/ini.v1 v1.55.0 // indirect
 	helm.sh/helm/v3 v3.1.2
 	rsc.io/letsencrypt v0.0.3 // indirect
