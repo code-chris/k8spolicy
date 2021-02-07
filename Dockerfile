@@ -14,6 +14,7 @@ ENV K8SPOLICY_SKIP_CONFTEST_DOWNLOAD true
 
 RUN apt-get update && \
     apt-get install -y wget ca-certificates --no-install-recommends && \
+    apt-get upgrade -y && \
 
     mkdir -p /download /tmp/k8spolicy/policies/k8s-api-deprecation && \
     wget https://github.com/swade1987/deprek8ion/archive/master.tar.gz -O /download/deprek8ion.tar.gz && \
