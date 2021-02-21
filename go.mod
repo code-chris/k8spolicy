@@ -1,6 +1,6 @@
 module k8spolicy
 
-go 1.15
+go 1.16
 
 require (
 	github.com/containerd/containerd v1.4.3
@@ -21,7 +21,6 @@ require (
 	golang.org/x/mod v0.4.1
 	gopkg.in/ini.v1 v1.55.0 // indirect
 	helm.sh/helm/v3 v3.1.2
-	rsc.io/letsencrypt v0.0.3 // indirect
 )
 
 replace (
