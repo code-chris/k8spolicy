@@ -3,7 +3,7 @@ module k8spolicy
 go 1.16
 
 require (
-	github.com/containerd/containerd v1.4.3
+	github.com/containerd/containerd v1.4.4
 	github.com/deislabs/oras v0.10.0
 	github.com/docker/go-units v0.4.0
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
