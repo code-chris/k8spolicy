@@ -18,7 +18,7 @@ require (
 	github.com/spf13/cobra v1.1.3
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/viper v1.7.1
-	github.com/yargevad/filepathx v0.0.0-20161019152617-907099cb5a62
+	github.com/yargevad/filepathx v1.0.0
 	golang.org/x/mod v0.4.2
 	gopkg.in/ini.v1 v1.55.0 // indirect
 	helm.sh/helm/v3 v3.1.2
