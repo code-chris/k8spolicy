@@ -7,7 +7,6 @@ require (
 	github.com/deislabs/oras v0.11.1
 	github.com/docker/go-units v0.4.0
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
-	github.com/magefile/mage v1.10.0 // indirect
 	github.com/mitchellh/mapstructure v1.2.2 // indirect
 	github.com/opencontainers/go-digest v1.0.0
 	github.com/opencontainers/image-spec v1.0.1
