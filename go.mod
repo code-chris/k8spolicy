@@ -4,7 +4,7 @@ go 1.16
 
 require (
 	github.com/containerd/containerd v1.4.4
-	github.com/deislabs/oras v0.11.1
+	github.com/deislabs/oras v0.12.0
 	github.com/docker/go-units v0.4.0
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/mitchellh/mapstructure v1.2.2 // indirect
