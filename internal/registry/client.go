@@ -20,8 +20,8 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	auth "github.com/deislabs/oras/pkg/auth/docker"
-	"github.com/deislabs/oras/pkg/oras"
+	auth "github.com/oras-project/oras-go/pkg/auth/docker"
+	"github.com/oras-project/oras-go/pkg/oras"
 	"github.com/pkg/errors"
 
 	"helm.sh/helm/v3/pkg/chart"

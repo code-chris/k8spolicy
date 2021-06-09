@@ -22,9 +22,9 @@ import (
 	"time"
 
 	"github.com/containerd/containerd/content"
-	orascontent "github.com/deislabs/oras/pkg/content"
 	digest "github.com/opencontainers/go-digest"
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
+	orascontent "github.com/oras-project/oras-go/pkg/content"
 	"github.com/pkg/errors"
 
 	"helm.sh/helm/v3/pkg/chart"
